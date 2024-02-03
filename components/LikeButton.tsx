@@ -54,7 +54,6 @@ const LikeButton: React.FC<LikeButtonProps> = ({
                 toast.error(error.message);
             } else {
                 setIsLiked(false);
-                toast.success("Like removed!");
             }
         } else {
             const { error } = await supabaseClient.from("liked_songs").insert({
