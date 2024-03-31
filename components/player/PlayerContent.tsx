@@ -2,7 +2,7 @@
 
 import { BsPauseFill, BsPlayFill } from "react-icons/bs";
 import { AiFillStepBackward, AiFillStepForward } from "react-icons/ai";
-import { HiSpeakerWave, HiSpeakerXMark } from "react-icons/hi2";
+import { PiSpeakerHigh, PiSpeakerNone, PiSpeakerX } from "react-icons/pi";
 import { useState, useEffect } from "react";
 import useSound from "use-sound";
 
@@ -21,10 +21,15 @@ interface PlayerContentProps {
 const PlayerContent: React.FC<PlayerContentProps> = ({ song, songUrl }) => {
   const player = usePlayer();
   const [volume, setVolume] = useState(1);
+  const [muted, setMuted] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
 
   const Icon = isPlaying ? BsPauseFill : BsPlayFill;
-  const VolumeIcon = volume === 0 ? HiSpeakerXMark : HiSpeakerWave;
+  const VolumeIcon = muted
+    ? PiSpeakerX
+    : volume === 0
+    ? PiSpeakerNone
+    : PiSpeakerHigh;
 
   const onPlayNext = () => {
     if (player.ids.length === 0) {
@@ -57,7 +62,7 @@ const PlayerContent: React.FC<PlayerContentProps> = ({ song, songUrl }) => {
   };
 
   const [play, { pause, sound }] = useSound(songUrl, {
-    volume: volume,
+    volume: muted ? 0 : volume,
     onplay: () => setIsPlaying(true),
     onend: () => {
       setIsPlaying(false);
@@ -84,10 +89,10 @@ const PlayerContent: React.FC<PlayerContentProps> = ({ song, songUrl }) => {
   };
 
   const toggleMute = () => {
-    if (volume === 0) {
-      setVolume(1);
+    if (muted) {
+      setMuted(false);
     } else {
-      setVolume(0);
+      setMuted(true);
     }
   };
 
